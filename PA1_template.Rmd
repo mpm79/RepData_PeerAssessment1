@@ -1,25 +1,85 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
+title: "Reproducible Research Project 1"
 output: 
-  html_document:
-    keep_md: true
+  html_document: 
+    keep_md: yes
 ---
+This report will perform a basic analysis of data from a personal activity monitoring device. The [data](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip) consists of the number of steps taken for each five minute interval during a two-month period for one subject. 
+
+**Loading and preprocessing the data**
+
+The file "activity.csv" is loaded into the data frame _activitydata_ and the variable _date_ is changed from a factor variable to a Date variable.
+
+```{r}
+activitydata<-read.csv("activity.csv")
+activitydata$date<-as.Date(activitydata$date)
+```
+
+**What is mean total number of steps taken per day?**
+
+The total number of steps taken per day over the two-month period is:
+
+```{r}
+stepsperday<-tapply(activitydata$steps,activitydata$date,sum,na.rm=TRUE)
+stepsperday
+hist(stepsperday,col="blue",xlab="Number of Steps per day",main="Histogram of Steps per Day")
+```
+
+The mean and median number of steps taken per day over the two-month period are (respectively):
+
+```{r}
+mean(stepsperday)
+median(stepsperday)
+```
+
+**What is the average daily activity pattern?**
+
+Provided below is a plot of the mean number of steps taken per 5-minute interval averaged over all days along with the maximum value and the beginning of the corresponding 5-minute interval.
 
 
-## Loading and preprocessing the data
+```{r}
+intervalmeans<-as.numeric(tapply(activitydata$steps,activitydata$interval,mean,na.rm=TRUE))
+intervalmeans<-data.frame(interval=activitydata$interval[1:288],meansteps=intervalmeans)
+plot(intervalmeans,type = "l",ylab = "Average Steps (across all days)",xlab = "Interval",
+     main = "Average Number of Steps per 5-Minute Interval",lwd=1)
 
+max(intervalmeans$meansteps,na.rm = TRUE)
+intervalmeans$interval[which.max(intervalmeans$meansteps)]
+```
 
+**Imputing missing values**
 
-## What is mean total number of steps taken per day?
+The total number of missing values in the dataset are:
 
+```{r}
+sum(is.na(activitydata$steps))
+```
 
+Missing values will be imputed by using the mean value for the corresponding interval. A histogram of the number of steps per day with imputed values is provided, along with the mean and median for the imputed dataset and the change in the mean and median from the original dataset.
 
-## What is the average daily activity pattern?
+```{r}
+activitydata2<-activitydata
+temp<-merge(intervalmeans,activitydata[is.na(activitydata),])
+temp2<-order(temp$interval,temp$date)
+temp<-temp[temp2,]
+activitydata2$steps[is.na(activitydata$steps)]<-temp$meansteps
 
+stepsperday2<-tapply(activitydata2$steps,activitydata2$date,sum,na.rm=TRUE)
+hist(stepsperday2,col="blue",xlab="Number of Steps per day",
+     main="Histogram of Steps per Day with Imputed NA Values")
+mean(stepsperday2)
+median(stepsperday2)
+mean(stepsperday2)-mean(stepsperday)
+median(stepsperday2)-median(stepsperday)
+```
 
+**Are there differences in activity patterns between weekdays and weekends?**
 
-## Imputing missing values
+```{r}
+activitydata2$weekday<-weekdays(activitydata2$date)
+wtest<-activitydata2$weekday=="Saturday" | activitydata2$weekday=="Saturday"
+activitydata2$weekday<-factor(wtest,labels=c("WEEKDAY","WEEKEND"))
+library(ggplot2)
+ggplot(activitydata2, aes(interval, steps)) + stat_summary(geom = "line", fun.y = "mean", size = 1) + facet_grid(weekday~.) + ggtitle("Mean Steps per Interval")
+```
 
-
-
-## Are there differences in activity patterns between weekdays and weekends?
