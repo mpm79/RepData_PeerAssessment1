@@ -115,7 +115,7 @@ $(document).ready(function () {
 <p>This report will perform a basic analysis of data from a personal activity monitoring device. The <a href="https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip">data</a> consists of the number of steps taken for each five minute interval during a two-month period for one subject.</p>
 <p><strong>Loading and preprocessing the data</strong></p>
 <p>The file “activity.csv” is loaded into the data frame <em>activitydata</em> and the variable <em>date</em> is changed from a factor variable to a Date variable.</p>
-<pre class="r"><code>activitydata&lt;-read.csv(&quot;activity.csv&quot;)
+<pre class="r"><code>activitydata&lt;-read.csv(&quot;~/R/activity.csv&quot;)
 activitydata$date&lt;-as.Date(activitydata$date)</code></pre>
 <p><strong>What is mean total number of steps taken per day?</strong></p>
 <p>The total number of steps taken per day over the two-month period is:</p>

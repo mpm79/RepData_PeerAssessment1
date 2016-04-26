@@ -7,7 +7,7 @@ The file "activity.csv" is loaded into the data frame _activitydata_ and the var
 
 
 ```r
-activitydata<-read.csv("activity.csv")
+activitydata<-read.csv("~/R/activity.csv")
 activitydata$date<-as.Date(activitydata$date)
 ```
 

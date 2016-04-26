@@ -11,7 +11,7 @@ This report will perform a basic analysis of data from a personal activity monit
 The file "activity.csv" is loaded into the data frame _activitydata_ and the variable _date_ is changed from a factor variable to a Date variable.
 
 ```{r}
-activitydata<-read.csv("activity.csv")
+activitydata<-read.csv("~/R/activity.csv")
 activitydata$date<-as.Date(activitydata$date)
 ```
 
